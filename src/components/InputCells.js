@@ -10,8 +10,11 @@ class InputCell extends Component {
   }
 
   render () {
+    const inputCellStyle = {
+      fontSize: '12px'
+    };
     return (
-      <input placeholder={this.props.data} type="text" name={this.props.column} onKeyPress={this.props.onEnter}></input>
+      <input style={inputCellStyle} placeholder={this.props.data} type="text" name={this.props.column} onKeyPress={this.props.onEnter}></input>
     );
   }
 }

@@ -57,6 +57,7 @@ class TableDisplay extends React.Component {
             keys={Object.keys(this.props.data[0])}
             reRender={this.props.reRender}
             tableName={this.props.tableName}
+            currentLimit={this.props.currentLimit}
             uri={this.props.uri}
           />
           {rowsArr}

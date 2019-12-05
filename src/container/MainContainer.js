@@ -16,13 +16,25 @@ class MainContainer extends Component {
       uri: '',
       tableNames: [],
       isLoading: true,
-      currentTable: ''
+      currentTable: '',
+      currentLimit: ''
     };
     this.getTable = this.getTable.bind(this);
     this.getTableNames = this.getTableNames.bind(this);
     this.reRender = this.reRender.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
   }
+
+//add login method here -->username, email on the body
+
+
+//login with Github, etc. (oAuth buttons) --> should just intitate the fetch to their server route
+
+
+
+
+
+
   // The following are METHODS used THROUGHOUT the APP /// 
   // There are only a few methods not contained in here. 
   // update method which was dispatched to here for fun/learning. and a eventHandler on HeaderCell file.
@@ -30,7 +42,8 @@ class MainContainer extends Component {
     // Get required data to build queryString to query database
     const uri = this.state.uri;
     const tableName = document.querySelector('#selectedTable').value;
-    const queryString = 'select * from ' + tableName;
+    const limitNum = document.querySelector('#selectedLimit').value;
+    const queryString = `select * from ${tableName} limit ${limitNum}`;
     const data = { uri, queryString };
     
     // send URI and queryString in a post request
@@ -44,7 +57,8 @@ class MainContainer extends Component {
         this.setState({
           data: result,
           isLoading: false,
-          currentTable: tableName
+          currentTable: tableName,
+          currentLimit: limitNum
         });
       });
   }
@@ -158,6 +172,7 @@ render(){
         <TableDisplay
           key={this.state.currentTable}
           tableName={this.state.currentTable}
+          currentLimit={this.state.currentLimit}
           uri={this.state.uri}
           data={this.state.data}
           reRender={this.reRender}
@@ -165,8 +180,21 @@ render(){
       ];
     }
 
+//in the first span, build out a login pane with:
+// - login button
+// - signup button (to determine how to handle --> perhaps this toggles additional fields similar to the popup component on TableDisplay
+// - GitHub oAuth button
+
     return (
       <div class="flex">
+        <span>
+          <label style={{display: "block"}}>Log In</label>
+          <input id="username" placeholder="username" style={{display: "block"}}></input>
+          <input id="password" placeholder="password" style={{display: "block"}}></input>
+          <button onClick={() => this.loginUser()}>Log in</button>
+          <button onClick={() => this.signupUser()}>Signup</button>
+          <button onClick={() => this.oAuthLogin()}>GitHub Login</button>
+        </span>
         <span>
           <label>Place URI Here:</label>
           <input
@@ -182,6 +210,17 @@ render(){
           <select id="selectedTable" style={inputTableStyle}>
             {tableOptions}
           </select>
+          <label>Limit</label>
+          <select id="selectedLimit" style={inputTableStyle}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+          </select>
+
+
           <button onClick={() => this.getTable()}>Get Data</button>
         </span>
         <br/>

@@ -11,6 +11,9 @@ class Row extends Component {
   }
 
   onEnter(event) {
+
+  //to change the ability to edit multiple entries, conditional logic would have to be implemented here
+
     const PK = Object.keys(this.props.data)[0]
     const reRender = this.props.reRender;
     const uri = this.props.uri;

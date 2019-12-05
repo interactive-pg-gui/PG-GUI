@@ -13,7 +13,7 @@ class TableHeader extends Component {
   }
 
   handleEvent(event) {
-    const queryString = `SELECT * FROM ${this.props.tableName} ORDER BY ${event.target.placeholder}`;
+    const queryString = `SELECT * FROM ${this.props.tableName} ORDER BY ${event.target.placeholder} LIMIT ${this.props.currentLimit}`;
     console.log(queryString);
 
     this.props.reRender(queryString);
