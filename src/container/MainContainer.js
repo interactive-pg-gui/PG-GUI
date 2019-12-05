@@ -18,14 +18,17 @@ class MainContainer extends Component {
       isLoading: true,
       currentTable: '',
       currentLimit: '',
+      username: '',
+      password: '',
     };
     this.getTable = this.getTable.bind(this);
     this.getTableNames = this.getTableNames.bind(this);
     this.reRender = this.reRender.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
   }
-
-  // add login method here -->username, email on the body
 
 
   // login with Github, etc. (oAuth buttons) --> should just intitate the fetch to their server route
@@ -79,6 +82,49 @@ class MainContainer extends Component {
         this.setState({ tableNames: titlesArray });
       });
   }
+
+  // this method pulls the username and password entered by the user from state and
+  loginUser() {
+    // event.preventDefault();
+    const { username, password } = this.state;
+    const userLogInfo = { username, password };
+    console.log(userLogInfo);
+    fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userLogInfo),
+    })
+    // this is where the auth will take place to make sure users are logged in to the right session
+
+      .then((response) => response.json())
+      .then((data) => console.log('Login Successful ', data))
+
+      // Also, an error here could mean the user doesnt exist yet so maybe we could redirect them to a signup page or
+      // make another fetch request to create an account for them with the already passed in username and password
+      .catch((error) => console.log(console.log('Error: Login Unsuccessful', error)));
+  }
+
+  // I need to figure out if i want to create and redirect a new user to a signup page if they clicked
+  //  sign up or do I simply use the info the pass into username and password as info to sign them up if they dont have
+  // an account
+
+  // signupUser() {
+  //   const {username}
+  // }
+
+  // add login method here -->username, email on the body
+  handleUsernameChange(event) {
+    this.setState({
+      username: event.target.value,
+    });
+  }
+
+  handlePasswordChange(event) {
+    this.setState({
+      password: event.target.value,
+    });
+  }
+
 
   // This method is called throughout the APP to reRender after doing something
   reRender(newString) {
@@ -185,21 +231,22 @@ class MainContainer extends Component {
     return (
       <div className="flex">
         <span>
-          <label style={{ display: 'block' }}>Log In</label>
-          <input id="username" placeholder="username" style={{ display: 'block' }} />
-          <input id="password" placeholder="password" style={{ display: 'block' }} />
-          <button onClick={() => this.loginUser()}>Log in</button>
-          <button onClick={() => this.signupUser()}>Signup</button>
-          <button onClick={() => this.oAuthLogin()}>GitHub Login</button>
+          <label style={{ display: 'block', alignItems: 'center' }}>Log In</label>
+          <input id="username" placeholder="username" style={{ display: 'block' }} onChange={this.handleUsernameChange} value={this.state.username} />
+          <input id="password" placeholder="password" style={{ display: 'block' }} onChange={this.handlePasswordChange} value={this.state.password} />
+          <button type="submit" onClick={() => this.loginUser()}>Log in</button>
+          <button type="submit" onClick={() => this.signupUser()}> Signup</button>
+          <button type="submit" onClick={() => this.oAuthLogin()}>GitHub Login</button>
         </span>
         <span>
           <label>Place URI Here:</label>
+
           <input
             id="uri"
             style={inputStyle}
             placeholder="progres://"
           />
-          <button onClick={() => this.getTableNames()}>Get Tables</button>
+          <button type="submit" onClick={() => this.getTableNames()}>Get Tables</button>
         </span>
         <br />
         <span>
@@ -218,13 +265,13 @@ class MainContainer extends Component {
           </select>
 
 
-          <button onClick={() => this.getTable()}>Get Data</button>
+          <button type="submit" onClick={() => this.getTable()}>Get Data</button>
         </span>
         <br />
         <span>
           <label>Delete a Row (Insert id):</label>
           <input style={inputTableStyle} id="deleteRow" />
-          <button onClick={this.deleteRow}>Delete</button>
+          <button type="submit" onClick={this.deleteRow}>Delete</button>
         </span>
         <h2>{this.state.currentTable}</h2>
         <div>{tableArray}</div>

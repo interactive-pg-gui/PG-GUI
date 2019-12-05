@@ -25,7 +25,7 @@ class CreatePopup extends React.Component {
     let columnValues = '';
 
     for (const keys in getDataObj) {
-      columnNames += `${keys }, `;
+      columnNames += `${keys}, `;
       columnValues += `'${getDataObj[keys]}'` + ', ';
     }
 
@@ -61,7 +61,7 @@ class CreatePopup extends React.Component {
         <input
           type="text"
           tname={this.props.tableName}
-          key={`${i }_inputBoxes`}
+          key={`${i}_inputBoxes`}
           uri={this.props.uri}
           id={this.props.keys[i]}
           name={this.props.keys[i]}
