@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { userInfo } from 'os';
 import TableDisplay from '../components/TableDisplay';
 import { update } from '../actions/actions.js';
+import UserInfo from '../components/userInfo';
 
 const mapDispatchToProps = (dispatch) => ({
   update: () => dispatch(update()),
@@ -20,8 +22,10 @@ class MainContainer extends Component {
       currentLimit: '',
       username: '',
       password: '',
-      authToggle: "login",
-      failedLog: false
+      authToggle: 'login',
+      failedLog: false,
+      databaseResponseArray: [],
+
     };
     this.getTable = this.getTable.bind(this);
     this.getTableNames = this.getTableNames.bind(this);
@@ -34,7 +38,6 @@ class MainContainer extends Component {
     this.toggleSignup = this.toggleSignup.bind(this);
     this.toggleLogin = this.toggleLogin.bind(this);
   }
-
 
   // login with Github, etc. (oAuth buttons) --> should just intitate the fetch to their server route
 
@@ -126,47 +129,55 @@ class MainContainer extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Signup Successful ', data);
+        this.setState({
+          databaseResponseArray: data,
+          authToggle: 'verified',
+        });
       })
       .catch((error) => {
         console.log(console.log('Error: Could not create user.', error));
       });
   }
 
-  toggleSignup(){
+  toggleSignup(event) {
+    event.preventDefault();
     this.setState({
-      authToggle: "signup",
-      failedLog: false
-    })
-  };
+      authToggle: 'signup',
+      failedLog: false,
+    });
+  }
 
-  toggleLogin(){
+  toggleLogin() {
     this.setState({
-      authToggle: "login"
-    })
-  };
+      authToggle: 'login',
+    });
+  }
 
-  toggleFailedLogin(){
+  toggleFailedLogin() {
     this.setState({
-      failedLog: true
-    })
-  };
+      failedLog: true,
+    });
+  }
 
   // add login method here -->username, email on the body
   handleUsernameChange(event) {
-    if (event.target.value){
-    this.setState({
-      username: event.target.value,
-    });
-   };
+    if (event.target.value) {
+      this.setState({
+        username: event.target.value,
+      });
+    }
   }
 
   handlePasswordChange(event) {
-    if (event.target.value){
-    this.setState({
-      password: event.target.value,
-    });
-   };
+    if (event.target.value) {
+      this.setState({
+        password: event.target.value,
+      });
+    }
+  }
+
+  displayUserInfo() {
+
   }
 
   // This method is called throughout the APP to reRender after doing something
@@ -266,35 +277,88 @@ class MainContainer extends Component {
       ];
     }
 
+    let loginPane;
+    if (this.state.authToggle === 'login') {
+      loginPane = (
+        <div
+          id="login_panel"
+          style={{
+            display: 'flex', flexFlow: 'column nowrap', alignItems: 'center', justifyContent: 'center', backgroundColor: 'purple', width: '250px', height: '150px', borderRadius: '25px',
+          }}
+        >
+          <input id="username" style={{ width: '100px' }} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
+          <input id="password" style={{ width: '100px' }} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
+          <button type="submit" onClick={() => { this.loginUser(); }}>Log In</button>
+        </div>
+      );
+    } else if (this.state.authToggle === 'signup') {
+      loginPane = (
+        <div
+          id="signup_panel"
+          style={{
+            display: 'flex', flexFlow: 'column nowrap', alignItems: 'center', justifyContent: 'center', backgroundColor: 'purple', width: '250px', height: '150px', borderRadius: '25px',
+          }}
+        >
+          <input id="username" style={{ width: '100px' }} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
+          <input id="password" style={{ width: '100px' }} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
+          <button type="submit" onClick={() => { this.signupUser(); }}>Signup</button>
+        </div>
+      );
+    } else {
+      loginPane = (
+        <UserInfo
+          username={this.state.username}
+          databaseResponseArray={this.state.databaseResponseArray}
+        />
+      );
+    }
+
     return (
       <div className="flex">
-        <div className="buttonBar" style={{backgroundColor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center"}}>
-            <button className="login" onClick={() => this.toggleLogin()}>
+        {this.state.authToggle !== 'verified'
+          ? (
+            <div
+              className="buttonBar"
+              style={{
+                backgroundColor: '#f5f5f5', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              <button className="login" onClick={() => this.toggleLogin()}>
               Login
-            </button>
-            <button className="signup" onClick={() => this.toggleSignup()}>
+              </button>
+              <button className="signup" onClick={(event) => this.toggleSignup(event)}>
               Signup
-            </button>
-          </div>
-
-      {this.state.authToggle === "login" ? 
-        <div id="login_panel" style={{ display: "flex", flexFlow: "column nowrap", alignItems: "center", justifyContent: "center", backgroundColor: "purple", width: "250px", height: "150px", borderRadius: "25px"}}>
-          <input id="username" style={{width: "100px"}} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
-          <input id="password" style={{width: "100px"}} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
-          <button type="submit" onClick={() => {this.loginUser()}}>Log In</button> 
-        </div> :
-        <div id="signup_panel" style={{ display: "flex", flexFlow: "column nowrap", alignItems: "center", justifyContent: "center", backgroundColor: "purple", width: "250px", height: "150px", borderRadius: "25px"}}>
-          <input id="username" style={{width: "100px"}} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
-          <input id="password" style={{width: "100px"}} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
-          <button type="submit" onClick={() => {this.signupUser()}}>Signup</button> 
-        </div>}
+              </button>
+            </div>
+          )
+          : null }
+        <div>
+          {loginPane}
+        </div>
 
         <div>
-          <div style={{maxWidth: "250px"}}>
-            {this.state.failedLog ? <p style={{textOverflow: "wrap", fontSize: "1em"}}>No dice. Did you mean to <a href="" onClick={() => this.toggleSignup()}>sign up</a>?</p> : null}
+          <div style={{ maxWidth: '250px' }}>
+            {this.state.failedLog ? (
+              <p style={{ textOverflow: 'wrap', fontSize: '1em' }}>
+                  No dice. Did you mean to
+                {' '}
+                <a href="" onClick={(event) => this.toggleSignup(event)}>sign up</a>
+
+
+                    ?
+              </p>
+            ) : null}
           </div>
-          <button style={{display: "block"}} type="submit" onClick={() => this.oAuthLogin()}>GitHub Login</button>
+
+          <div>
+            {this.state.authToggle !== 'verified'
+              ? <button style={{ display: 'block' }} type="submit" onClick={() => this.oAuthLogin()}>GitHub Login</button>
+              : null }
+          </div>
+
+
         </div>
+
         <span>
           <label>Place URI Here:</label>
 
