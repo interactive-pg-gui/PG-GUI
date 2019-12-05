@@ -1,7 +1,7 @@
 // This component creates the row containing each cell with column names
 
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import HeaderCell from './HeaderCells.js';
 
 class TableHeader extends Component {
@@ -25,9 +25,9 @@ class TableHeader extends Component {
       rowsArr.push(
         <HeaderCell
           handleEvent={this.handleEvent}
-          key={index + '_headerCell'}
+          key={`${index}_headerCell`}
           data={val}
-        />
+        />,
       );
     });
 

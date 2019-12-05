@@ -7,14 +7,14 @@ class TableDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showPopup: false
+      showPopup: false,
     };
     this.togglePopup = this.togglePopup.bind(this);
   }
 
   togglePopup() {
     this.setState({
-      showPopup: !this.state.showPopup
+      showPopup: !this.state.showPopup,
     });
   }
 
@@ -24,23 +24,23 @@ class TableDisplay extends React.Component {
     const boxShadow = {
       boxShadow:
         '0px 0px 20px rgba(0,0,0,0.10), 0px 10px 20px rgba(0,0,0,0.05), 0px 20px 20px rgba(0,0,0,0.05), 0px 30px 20px rgba(0,0,0,0.05)',
-      display: 'inline-block'
+      display: 'inline-block',
     };
 
     for (let i = 0; i < lengthRow; i += 1) {
       rowsArr.push(
         <Row
-          key={i + '_row'}
+          key={`${i}_row`}
           reRender={this.props.reRender}
           tableName={this.props.tableName}
           uri={this.props.uri}
           data={this.props.data[i]}
-        />
+        />,
       );
     }
 
     return (
-      <div class="flex">
+      <div className="flex">
         <button onClick={this.togglePopup}>Create Row</button>
         {this.state.showPopup ? (
           <CreatePopup
@@ -51,7 +51,7 @@ class TableDisplay extends React.Component {
             uri={this.props.uri}
           />
         ) : null}
-        <br></br>
+        <br />
         <div style={boxShadow}>
           <TableHeader
             keys={Object.keys(this.props.data[0])}

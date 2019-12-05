@@ -1,20 +1,20 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class InputCell extends Component {
   constructor(props) {
-    super(props) 
+    super(props);
 
     this.state = {
 
-    }
+    };
   }
 
-  render () {
+  render() {
     const inputCellStyle = {
-      fontSize: '12px'
+      fontSize: '12px',
     };
     return (
-      <input style={inputCellStyle} placeholder={this.props.data} type="text" name={this.props.column} onKeyPress={this.props.onEnter}></input>
+      <input style={inputCellStyle} placeholder={this.props.data} type="text" name={this.props.column} onKeyPress={this.props.onEnter} />
     );
   }
 }
