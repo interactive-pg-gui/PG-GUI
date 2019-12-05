@@ -20,6 +20,8 @@ class MainContainer extends Component {
       currentLimit: '',
       username: '',
       password: '',
+      authToggle: "login",
+      failedLog: false
     };
     this.getTable = this.getTable.bind(this);
     this.getTableNames = this.getTableNames.bind(this);
@@ -28,6 +30,9 @@ class MainContainer extends Component {
     this.loginUser = this.loginUser.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.toggleFailedLogin = this.toggleFailedLogin.bind(this);
+    this.toggleSignup = this.toggleSignup.bind(this);
+    this.toggleLogin = this.toggleLogin.bind(this);
   }
 
 
@@ -97,34 +102,72 @@ class MainContainer extends Component {
     // this is where the auth will take place to make sure users are logged in to the right session
 
       .then((response) => response.json())
-      .then((data) => console.log('Login Successful ', data))
+      .then((data) => {
+        console.log('Login Successful ', data);
+      })
 
       // Also, an error here could mean the user doesnt exist yet so maybe we could redirect them to a signup page or
       // make another fetch request to create an account for them with the already passed in username and password
-      .catch((error) => console.log(console.log('Error: Login Unsuccessful', error)));
+      .catch((error) => {
+        console.log(console.log('Error: Login Unsuccessful', error));
+        this.toggleFailedLogin();
+      });
   }
 
-  // I need to figure out if i want to create and redirect a new user to a signup page if they clicked
-  //  sign up or do I simply use the info the pass into username and password as info to sign them up if they dont have
-  // an account
+  signupUser() {
+    // event.preventDefault();
+    const { username, password } = this.state;
+    const userLogInfo = { username, password };
+    console.log(userLogInfo);
+    fetch('/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userLogInfo),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Signup Successful ', data);
+      })
+      .catch((error) => {
+        console.log(console.log('Error: Could not create user.', error));
+      });
+  }
 
-  // signupUser() {
-  //   const {username}
-  // }
+  toggleSignup(){
+    this.setState({
+      authToggle: "signup",
+      failedLog: false
+    })
+  };
+
+  toggleLogin(){
+    this.setState({
+      authToggle: "login"
+    })
+  };
+
+  toggleFailedLogin(){
+    this.setState({
+      failedLog: true
+    })
+  };
 
   // add login method here -->username, email on the body
   handleUsernameChange(event) {
+    if (event.target.value){
     this.setState({
       username: event.target.value,
     });
+   };
   }
 
   handlePasswordChange(event) {
+    if (event.target.value){
     this.setState({
       password: event.target.value,
     });
+   };
   }
-
 
   // This method is called throughout the APP to reRender after doing something
   reRender(newString) {
@@ -223,21 +266,35 @@ class MainContainer extends Component {
       ];
     }
 
-    // in the first span, build out a login pane with:
-    // - login button
-    // - signup button (to determine how to handle --> perhaps this toggles additional fields similar to the popup component on TableDisplay
-    // - GitHub oAuth button
-
     return (
       <div className="flex">
-        <span>
-          <label style={{ display: 'block', alignItems: 'center' }}>Log In</label>
-          <input id="username" placeholder="username" style={{ display: 'block' }} onChange={this.handleUsernameChange} value={this.state.username} />
-          <input id="password" placeholder="password" style={{ display: 'block' }} onChange={this.handlePasswordChange} value={this.state.password} />
-          <button type="submit" onClick={() => this.loginUser()}>Log in</button>
-          <button type="submit" onClick={() => this.signupUser()}> Signup</button>
-          <button type="submit" onClick={() => this.oAuthLogin()}>GitHub Login</button>
-        </span>
+        <div className="buttonBar" style={{backgroundColor: "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center"}}>
+            <button className="login" onClick={() => this.toggleLogin()}>
+              Login
+            </button>
+            <button className="signup" onClick={() => this.toggleSignup()}>
+              Signup
+            </button>
+          </div>
+
+      {this.state.authToggle === "login" ? 
+        <div id="login_panel" style={{ display: "flex", flexFlow: "column nowrap", alignItems: "center", justifyContent: "center", backgroundColor: "purple", width: "250px", height: "150px", borderRadius: "25px"}}>
+          <input id="username" style={{width: "100px"}} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
+          <input id="password" style={{width: "100px"}} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
+          <button type="submit" onClick={() => {this.loginUser()}}>Log In</button> 
+        </div> :
+        <div id="signup_panel" style={{ display: "flex", flexFlow: "column nowrap", alignItems: "center", justifyContent: "center", backgroundColor: "purple", width: "250px", height: "150px", borderRadius: "25px"}}>
+          <input id="username" style={{width: "100px"}} placeholder="username" onChange={this.handleUsernameChange} value={this.state.username} />
+          <input id="password" style={{width: "100px"}} placeholder="password" onChange={this.handlePasswordChange} value={this.state.password} />
+          <button type="submit" onClick={() => {this.signupUser()}}>Signup</button> 
+        </div>}
+
+        <div>
+          <div style={{maxWidth: "250px"}}>
+            {this.state.failedLog ? <p style={{textOverflow: "wrap", fontSize: "1em"}}>No dice. Did you mean to <a href="" onClick={() => this.toggleSignup()}>sign up</a>?</p> : null}
+          </div>
+          <button style={{display: "block"}} type="submit" onClick={() => this.oAuthLogin()}>GitHub Login</button>
+        </div>
         <span>
           <label>Place URI Here:</label>
 
