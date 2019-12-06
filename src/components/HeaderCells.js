@@ -1,18 +1,18 @@
 // This component creates each cell for the column names
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class HeaderCell extends Component {
   constructor(props) {
-  super(props);
+    super(props);
 
-  this.state = {};
-}
+    this.state = {};
+  }
 
   render() {
     const tableHeaderStyle = {
       background: '#d6e0f5',
-      fontSize: '12px'
+      fontSize: '12px',
     };
     return (
       <input
@@ -21,7 +21,7 @@ class HeaderCell extends Component {
         name={this.props.column}
         onClick={this.props.handleEvent}
         style={tableHeaderStyle}
-      ></input>
+      />
     );
   }
 }

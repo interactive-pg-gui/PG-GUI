@@ -14,7 +14,7 @@ class CreatePopup extends React.Component {
     const getDataObj = {};
 
     for (let i = 1; i < this.props.keys.length; i += 1) {
-      let inputData = data.get(this.props.keys[i]);
+      const inputData = data.get(this.props.keys[i]);
 
       if (inputData !== '') {
         getDataObj[this.props.keys[i]] = inputData;
@@ -24,8 +24,8 @@ class CreatePopup extends React.Component {
     let columnNames = '';
     let columnValues = '';
 
-    for (let keys in getDataObj) {
-      columnNames += keys + ', ';
+    for (const keys in getDataObj) {
+      columnNames += `${keys}, `;
       columnValues += `'${getDataObj[keys]}'` + ', ';
     }
 
@@ -37,8 +37,8 @@ class CreatePopup extends React.Component {
 
     console.log(columnValues, columnNames);
 
-    let queryString = `INSERT INTO ${this.props.tableName} (${columnNames}) values (${columnValues})`;
-    const uri = this.props.uri;
+    const queryString = `INSERT INTO ${this.props.tableName} (${columnNames}) values (${columnValues})`;
+    const { uri } = this.props;
 
     console.log('THIS IS QUERYSTRNG', uri, queryString);
 
@@ -46,9 +46,9 @@ class CreatePopup extends React.Component {
       method: 'POST',
       body: JSON.stringify({ uri, queryString }),
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(data => {
+        'Content-Type': 'application/json',
+      },
+    }).then((data) => {
       console.log('post request on submit has completed');
       this.props.reRender();
     });
@@ -61,12 +61,12 @@ class CreatePopup extends React.Component {
         <input
           type="text"
           tname={this.props.tableName}
-          key={i + '_inputBoxes'}
+          key={`${i}_inputBoxes`}
           uri={this.props.uri}
           id={this.props.keys[i]}
           name={this.props.keys[i]}
           placeholder={this.props.keys[i]}
-        />
+        />,
       );
     }
 
