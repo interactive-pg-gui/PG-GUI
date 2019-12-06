@@ -367,6 +367,23 @@ class MainContainer extends Component {
             style={inputStyle}
             placeholder="progres://"
           />
+          <div>
+            {this.state.authToggle === 'verified'
+              ? (
+                <div>
+                  <label>Save URI Label Here:</label>
+
+                  <input
+                    id="queryname"
+                    style={{ margin: '10px', width: '100px' }}
+                    placeholder="URI Label Here"
+                  />
+
+                </div>
+              ) : null }
+          </div>
+
+
           <button type="submit" onClick={() => this.getTableNames()}>Get Tables</button>
         </span>
         <br />

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon server/server.js",
     "build": "webpack",
-    "both": "concurrently \"webpack-dev-server --mode development --open --hot\" \"nodemon server/server.js\""
+    "both": "webpack-dev-server --mode development --open --hot & nodemon server/server.js"
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,6 @@
   "homepage": "https://github.com/PG-GUI/PG-GUI#readme",
   "dependencies": {
     "babel-core": "^6.26.3",
-    "concurrently": "^5.0.0",
     "path": "^0.12.7",
     "pg": "^7.14.0",
     "react": "^16.12.0",
