@@ -80,8 +80,12 @@ class MainContainer extends Component {
     })
       .then(res => res.json())
       .then(result => {
+        console.log('result');
+        console.log(result);
+        const { tableName } = result;
         const titlesArray = [];
-        result.forEach(el => {
+        console.log(result);
+        tableName.forEach(el => {
           if (el.tablename.slice(0, 4) !== 'sql_') {
             titlesArray.push(el.tablename);
           }
@@ -96,7 +100,7 @@ class MainContainer extends Component {
     const { username, password } = this.state;
     const userLogInfo = { username, password };
     console.log(userLogInfo);
-    fetch('/login', {
+    fetch('/server/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userLogInfo)
