@@ -21,6 +21,7 @@
   "homepage": "https://github.com/PG-GUI/PG-GUI#readme",
   "dependencies": {
     "babel-core": "^6.26.3",
+    "bcryptjs": "^2.4.3",
     "mongoose": "^5.7.13",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",

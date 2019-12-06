@@ -5,7 +5,7 @@ const path = require('path');
 const file = require('./postgresController');
 const connectionPoint = require('./connection.js').connectionPoint;
 const bodyParser = require('body-parser');
-const loginController = require('./loginController.js')
+const loginController = require('./loginController.js');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -28,12 +28,18 @@ app.get('/', function(req, res) {
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.post('/signup', loginController.signup, (req, res) =>{
-  return res.status(200).json('Successful Signup!')
-})
+app.post('/server/signup', loginController.signup, (req, res) => {
+  return res.status(200).json('Successful Signup!');
+});
+
+app.post('/server/login', loginController.login, (req, res) => {
+  return res.status(200).json('Succesful Login!');
+});
+
 app.post(
   '/server/tablenames',
   connectionPoint.createConnection,
+  //check if a user is logged in and if so add uri to uriHistory, if not, call next()
   file.getTableNames,
   (req, res) => {
     return res.status(200).json(res.locals.tableName);
@@ -80,9 +86,9 @@ app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
     status: 400,
-    message: { err: 'An error occurred' },
+    message: { err: 'An error occurred' }
   };
-  const errorObj = { ...defaultErr, ...err};
+  const errorObj = { ...defaultErr, ...err };
   console.log(errorObj.log);
   return res.status(errorObj.status).json(errorObj.message);
 });
