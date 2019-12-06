@@ -45,6 +45,7 @@ class MainContainer extends Component {
 
   componentWillMount() { 
     this.props.confirmLogin();
+    console.log("confirmLog() called in componentWillMount");
     if (this.state.loginCheck !== "anonymous" ){
       this.setState({
         authToggle: "verified"
@@ -54,7 +55,7 @@ class MainContainer extends Component {
 
   componentDidMount() {
     if (this.state.loginCheck !== "anonymous" && this.state.authToggle === "verified"){
-      fetch('/', {
+      fetch('/server/valid', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -98,13 +99,13 @@ class MainContainer extends Component {
 
   getTableNames() {
     const uri = document.querySelector('#uri').value;
-    let dbName;
-    const querynameVal = document.querySelector('#queryname').value;
-    if (querynameVal !== (undefined || '')){
-      dbName = querynameVal;
+    let name;
+    const dbNameVal = document.querySelector('#queryname').value;
+    if (dbNameVal !== (undefined || '')){
+      name = dbNameVal;
     }
     this.setState({ uri });
-    const data = { uri, dbName };
+    const data = { uri, name };
     fetch('/server/tablenames', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -135,9 +136,10 @@ class MainContainer extends Component {
     })
       // this is where the auth will take place to make sure users are logged in to the right session
       .then(response => {
-        const {ssid} = response.cookie;
-        localStorage.setItem(ssid);
+        const {SSID} = response.cookie;
+        localStorage.setItem(SSID);
         this.props.confirmLogin();
+        console.log("confirmLog() called in LoginUser");
       })
       .then(response => response.json())
       .then(data => {
@@ -147,9 +149,6 @@ class MainContainer extends Component {
         });
         console.log('Login Successful ', data);
       })
-
-      // Also, an error here could mean the user doesnt exist yet so maybe we could redirect them to a signup page or
-      // make another fetch request to create an account for them with the already passed in username and password
       .catch(error => {
         console.log(console.log('Error: Login Unsuccessful', error));
         this.toggleFailedLogin();
