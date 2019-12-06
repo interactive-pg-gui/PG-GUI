@@ -6,10 +6,12 @@ const file = require('./postgresController');
 const connectionPoint = require('./connection.js').connectionPoint;
 const bodyParser = require('body-parser');
 const loginController = require('./loginController.js');
+const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
+app.use(cookieParser());
 
 // CHAOS FLOW
 
@@ -33,16 +35,30 @@ app.post('/server/signup', loginController.signup, (req, res) => {
 });
 
 app.post('/server/login', loginController.login, (req, res) => {
-  return res.status(200).json('Succesful Login!');
+  console.log(res.locals.id);
+  return res
+    .status(200)
+    .cookie('SSID', res.locals.SSID, {
+      expires: new Date(Date.now() + 900000),
+      httpOnly: true
+    })
+    .json(res.locals.uriHistory);
 });
 
 app.post(
   '/server/tablenames',
+  loginController.addURI,
   connectionPoint.createConnection,
-  //check if a user is logged in and if so add uri to uriHistory, if not, call next()
   file.getTableNames,
   (req, res) => {
-    return res.status(200).json(res.locals.tableName);
+    console.log('res.locals');
+    console.log(res.locals);
+    return res
+      .status(200)
+      .json({
+        tableName: res.locals.tableName,
+        uriHistory: res.locals.uriHistory
+      });
   }
 );
 

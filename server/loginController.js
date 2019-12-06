@@ -50,6 +50,9 @@ loginController.login = (req, res, next) => {
       };
       return next(errObj);
     } else {
+      const id = user._id;
+      const uriHistory = user.uriHistory;
+      console.log('user id: ', user._id);
       const hashedPassword = user.password;
       console.log('hashedPassword', hashedPassword);
       console.log('password', password);
@@ -63,7 +66,8 @@ loginController.login = (req, res, next) => {
           });
         }
         if (response) {
-          // send JWT or session token or cookie or something like that
+          res.locals.SSID = id;
+          res.locals.uriHistory = uriHistory;
           return next();
         } else {
           return res.json({
@@ -74,6 +78,35 @@ loginController.login = (req, res, next) => {
       });
     }
   });
+};
+
+loginController.addURI = (req, res, next) => {
+  console.log('req.cookies.SSID');
+  console.log(req.cookies.SSID);
+  if (req.cookies.SSID !== undefined) {
+    const { name } = req.body;
+    const { uri } = req.body;
+    Users.find({ _id: req.cookies.SSID })
+      .then(data => {
+        return data[0].uriHistory;
+      })
+      .then(uriHistory => {
+        // console.log('inside of uriHistory this is the data[0]');
+        // console.log(uriHistory);
+        // const newEntry = {}; ///this was workaround for notation issue;
+        // newEntry[name] = uri;
+        // uriHistory.unshift(newEntry);
+        // console.log('uriHistoryunshift');
+        // console.log(uriHistory);
+        // res.locals.updatedHistory = uriHistory;
+        // Users.update(
+        //   { _id: req.cookies.SSID },
+        //   { $push: { uriHistory: uriHistory } }
+        // );
+        return next();
+      });
+  }
+  return next();
 };
 
 module.exports = loginController;
