@@ -136,7 +136,7 @@ class MainContainer extends Component {
     })
       // this is where the auth will take place to make sure users are logged in to the right session
       .then(response => {
-        const {SSID} = response.cookie;
+        const {SSID} = response.cookies;
         localStorage.setItem(SSID);
         this.props.confirmLogin();
         console.log("confirmLog() called in LoginUser");
