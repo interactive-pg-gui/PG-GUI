@@ -28,11 +28,11 @@ app.get('/', function(req, res) {
   res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.post('/signup', loginController.signup, (req, res) => {
+app.post('/server/signup', loginController.signup, (req, res) => {
   return res.status(200).json('Successful Signup!');
 });
 
-app.post('/login', loginController.login, (req, res) => {
+app.post('/server/login', loginController.login, (req, res) => {
   return res.status(200).json('Succesful Login!');
 });
 
