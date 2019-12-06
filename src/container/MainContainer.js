@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { userInfo } from 'os';
+// import { userInfo } from 'os';
 import TableDisplay from '../components/TableDisplay';
 import { update } from '../actions/actions.js';
 import UserInfo from '../components/userInfo';
@@ -22,24 +22,51 @@ class MainContainer extends Component {
       currentLimit: '',
       username: '',
       password: '',
-      authToggle: 'login',
+      authToggle: 'verified',
       failedLog: false,
-      databaseResponseArray: []
+      databaseResponseArray: [],
+      loginCheck: this.props.loginCheck
     };
     this.getTable = this.getTable.bind(this);
     this.getTableNames = this.getTableNames.bind(this);
     this.reRender = this.reRender.bind(this);
     this.deleteRow = this.deleteRow.bind(this);
     this.loginUser = this.loginUser.bind(this);
+    this.signupUser = this.signupUser.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.toggleFailedLogin = this.toggleFailedLogin.bind(this);
     this.toggleSignup = this.toggleSignup.bind(this);
     this.toggleLogin = this.toggleLogin.bind(this);
-    this.signupUser = this.signupUser.bind(this);
+    this.populateUserURIs = this.populateUserURIs.bind(this);
   }
 
   // login with Github, etc. (oAuth buttons) --> should just intitate the fetch to their server route
+
+  componentWillMount() { 
+    this.props.confirmLogin();
+    if (this.state.loginCheck !== "anonymous" ){
+      this.setState({
+        authToggle: "verified"
+      });
+    }
+  }
+
+  componentDidMount() {
+    if (this.state.loginCheck !== "anonymous" && this.state.authToggle === "verified"){
+      fetch('/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(res => res.json())
+        .then(result => {
+          this.setState({
+            databaseResponseArray: result
+          });
+        });
+      }
+  }
 
   // The following are METHODS used THROUGHOUT the APP ///
   // There are only a few methods not contained in here.
@@ -71,8 +98,13 @@ class MainContainer extends Component {
 
   getTableNames() {
     const uri = document.querySelector('#uri').value;
+    let dbName;
+    const querynameVal = document.querySelector('#queryname').value;
+    if (querynameVal !== (undefined || '')){
+      dbName = querynameVal;
+    }
     this.setState({ uri });
-    const data = { uri };
+    const data = { uri, dbName };
     fetch('/server/tablenames', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -102,9 +134,17 @@ class MainContainer extends Component {
       body: JSON.stringify(userLogInfo)
     })
       // this is where the auth will take place to make sure users are logged in to the right session
-
+      .then(response => {
+        const {ssid} = response.cookie;
+        localStorage.setItem(ssid);
+        this.props.confirmLogin();
+      })
       .then(response => response.json())
       .then(data => {
+        this.setState({
+          databaseResponseArray: data,
+          authToggle: 'verified'
+        });
         console.log('Login Successful ', data);
       })
 
@@ -129,7 +169,7 @@ class MainContainer extends Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
-          databaseResponseArray: data,
+          // databaseResponseArray: data,
           authToggle: 'verified'
         });
       })
@@ -175,7 +215,9 @@ class MainContainer extends Component {
     }
   }
 
-  displayUserInfo() {}
+  populateUserURIs(selectedURI) {
+    document.querySelector('#uri').value = selectedURI;
+  }
 
   // This method is called throughout the APP to reRender after doing something
   reRender(newString) {
@@ -360,6 +402,7 @@ class MainContainer extends Component {
         <UserInfo
           username={this.state.username}
           databaseResponseArray={this.state.databaseResponseArray}
+          populateUserURIs={this.populateUserURIs}
         />
       );
     }

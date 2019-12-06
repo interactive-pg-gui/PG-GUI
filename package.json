@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon server/server.js",
     "build": "webpack",
-    "both": "webpack-dev-server --mode development --open --hot & nodemon server/server.js"
+    "both": "webpack-dev-server --mode development --open --hot & nodemon server/server.js",
+    "windows": "concurrently \"webpack-dev-server --mode development --open --hot\" \"nodemon server/server.js\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
   "dependencies": {
     "babel-core": "^6.26.3",
     "bcryptjs": "^2.4.3",
+    "concurrently": "^5.0.0",
     "mongoose": "^5.7.13",
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",

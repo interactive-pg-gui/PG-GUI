@@ -6,11 +6,29 @@ class UserInfo extends Component {
   }
 
   render() {
-    return (
-      <p>
-      So this happened
+    const userURIs = this.props.databaseResponseArray;
+    const uriArray = [];
+    const displayArray = [];
 
-      </p>
+    for (let i = 0; i < userURIs.length; i++){
+      uriArray.push(Object.entries(userURIs[i]));
+    }
+
+    for (let j = 0; j < uriArray; j++){
+      displayArray.push(
+        <option onClick={() => this.props.populateUserURIs(userURIs[j][1]) } uri={userURIs[j][1]}>{userURIs[j][0]}</option>
+      )
+    }
+
+    return (
+      <div style={{width: "200px", height: "50px", backgroundColor: "purple"}}>
+        <label>{this.props.username}</label>
+        <div>
+          <select value="Your Databases" readOnly={true}>
+            {displayArray}
+          </select>
+        </div>
+      </div>
     );
   }
 }
