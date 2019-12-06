@@ -39,6 +39,7 @@ app.post('/login', loginController.login, (req, res) => {
 app.post(
   '/server/tablenames',
   connectionPoint.createConnection,
+  //check if a user is logged in and if so add uri to uriHistory, if not, call next()
   file.getTableNames,
   (req, res) => {
     return res.status(200).json(res.locals.tableName);
