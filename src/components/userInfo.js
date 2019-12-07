@@ -21,10 +21,10 @@ class UserInfo extends Component {
     }
 
     return (
-      <div style={{width: "200px", height: "50px", backgroundColor: "purple"}}>
-        <label>{this.props.username}</label>
+      <div style={{width: "200px", height: "40px", backgroundColor: "purple", display: "flex", justifyContent: "space-between"}}>
+        <span style={{fontWeight: "bolder", fontFamily: "Arial", fontSize: "2em"}}>{this.props.username}</span>
         <div>
-          <select value="Your Databases" readOnly={true}>
+          <select name="Your Databases" readOnly={true}>
             {displayArray}
           </select>
         </div>

@@ -22,7 +22,7 @@ class MainContainer extends Component {
       currentLimit: '',
       username: '',
       password: '',
-      authToggle: 'verified',
+      authToggle: 'login',
       failedLog: false,
       databaseResponseArray: [],
       loginCheck: this.props.loginCheck
@@ -43,31 +43,31 @@ class MainContainer extends Component {
 
   // login with Github, etc. (oAuth buttons) --> should just intitate the fetch to their server route
 
-  componentWillMount() { 
-    this.props.confirmLogin();
-    console.log("confirmLog() called in componentWillMount");
-    if (this.state.loginCheck !== "anonymous" ){
-      this.setState({
-        authToggle: "verified"
-      });
-    }
-  }
+  // componentWillMount() { 
+  //   this.props.confirmLogin();
+  //   console.log("confirmLog() called in componentWillMount");
+  //   if (this.state.loginCheck !== "anonymous" ){
+  //     this.setState({
+  //       authToggle: "verified"
+  //     });
+  //   }
+  // }
 
-  componentDidMount() {
-    if (this.state.loginCheck !== "anonymous" && this.state.authToggle === "verified"){
-      fetch('/server/valid', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      })
-        .then(res => res.json())
-        .then(result => {
-          this.setState({
-            databaseResponseArray: result
-          });
-        });
-      }
-  }
+  // componentDidMount() {
+  //   if (this.state.loginCheck !== "anonymous" && this.state.authToggle === "verified"){
+  //     fetch('/server/valid', {
+  //       method: 'GET',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(data)
+  //     })
+  //       .then(res => res.json())
+  //       .then(result => {
+  //         this.setState({
+  //           databaseResponseArray: result
+  //         });
+  //       });
+  //     }
+  // }
 
   // The following are METHODS used THROUGHOUT the APP ///
   // There are only a few methods not contained in here.
